@@ -4,7 +4,8 @@
 
 This is yet another docker image for Nightscout. Unlike the other images this tries to:
 - use individual tags for each Nightscout release
-- use Docker Hub auto build minimalized images
+- use Docker Hub's auto build feature
+- provide minimalized images using multistage builds
 - provide a `docker-compose.yml` example file
 - keep it up to date
 
@@ -13,9 +14,11 @@ This is yet another docker image for Nightscout. Unlike the other images this tr
 
 You need to have a host running [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/). It is recommended to use a reverse proxy supporting `https://` and `wss://` SSL offloading.
 
-### apache reverse proxy
+### Apache HTTPD reverse proxy
 
-You need to enable the *proxy* and *proxy_wstunnel* modules. Nightscout uses a *Websocket* connection which needs to be handled using the *rewrite* module:
+One possiblity is to use Apache HTTPD as SSL offloading reverse proxy using certificates from [Let's Encrypt](https://letsencrypt.org/).
+
+You need to enable the *mod_proxy* and *mod_proxy_wstunnel* modules. Nightscout uses a *Websocket* connection which needs to be handled special using *mod_rewrite*:
 
 ```
 <VirtualHost *:443>
@@ -38,7 +41,7 @@ You need to enable the *proxy* and *proxy_wstunnel* modules. Nightscout uses a *
 
 ## Deployment
 
-Grab the example [docker-compose.yml](docker-compose.yml) file and change it to meet your needs. You need to use an explicit version tag for the docker image - the `latest` tag is missing intentionally.
+Grab the example [docker-compose.yml](https://github.com/liske/cgm-remote-monitor-docker/blob/master/docker-compose.yml) file and change it to meet your needs. You need to use an explicit version tag for the docker image - the `latest` tag is missing intentionally!
 
 Details of the configuration parameters can be found in Nightscout's [README.md](https://github.com/nightscout/cgm-remote-monitor/blob/master/README.md#environment).
 
