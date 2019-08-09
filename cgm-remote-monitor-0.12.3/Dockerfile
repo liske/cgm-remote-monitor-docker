@@ -10,7 +10,8 @@ FROM node:8.15-stretch-slim
 COPY --from=build /opt/app /opt/app
 WORKDIR /opt/app
 
-RUN npm install && \
+RUN apt-get update && apt-get install -y python make build-essential && \
+  npm install && \
   npm run postinstall && \
   npm run env
 
