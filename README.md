@@ -37,7 +37,7 @@ You need to enable the *mod_proxy* and *mod_proxy_wstunnel* modules. Nightscout 
   Include /etc/letsencrypt/options-ssl-apache.conf
 
   SetEnv AccessControlAllowOrigin https://ns.example.com
-  # allow access by nightscout-report
+  # allow access by nightscout-reporter (@zreptil)
   #SetEnvIf Origin "https://nightscout-reporter.zreptil.de$" AccessControlAllowOrigin=$0
   Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
   Header set Access-Control-Allow-Credentials true
