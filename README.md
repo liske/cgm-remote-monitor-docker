@@ -35,6 +35,13 @@ You need to enable the *mod_proxy* and *mod_proxy_wstunnel* modules. Nightscout 
   SSLCertificateFile /etc/letsencrypt/live/ns.example.com/fullchain.pem
   SSLCertificateKeyFile /etc/letsencrypt/live/ns.example.com/privkey.pem
   Include /etc/letsencrypt/options-ssl-apache.conf
+
+  # Override CORS headers to allow access by nightscout-reporter (https://nightscout-reporter.zreptil.de/)
+  #<IfModule mod_headers.c>
+  #  SetEnvIf Origin "https://(ns.example.com|nightscout-reporter.zreptil.de)$" AccessControlAllowOrigin=$0
+  #  Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+  #  Header set Access-Control-Allow-Credentials true
+  #</IfModule>
 </VirtualHost>
 ```
 
