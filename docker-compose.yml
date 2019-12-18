@@ -1,7 +1,7 @@
 version: '3'
 services:
   cgm-remote-monitor:
-    image: liske/cgm-remote-monitor:0.12.5
+    image: liske/cgm-remote-monitor:13.0.1
     environment:
       ## settings according to
       ## https://github.com/nightscout/cgm-remote-monitor/blob/master/README.md#environment
