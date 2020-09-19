@@ -1,7 +1,7 @@
 version: '3'
 services:
   cgm-remote-monitor:
-    image: liske/cgm-remote-monitor:13.0.1
+    image: liske/cgm-remote-monitor:14.0.3
     environment:
       ## settings according to
       ## https://github.com/nightscout/cgm-remote-monitor/blob/master/README.md#environment
@@ -58,6 +58,6 @@ services:
       - mongo
 
   mongo:
-    image: mongo:3.6-stretch
+    image: mongo:3.20-xenial
     volumes:
       - ./mongodb:/data/db
