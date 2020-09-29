@@ -47,7 +47,7 @@ You need to enable the *mod_proxy* and *mod_proxy_wstunnel* modules. Nightscout 
 
 ## Deployment
 
-Grab the example [docker-compose.yml](https://github.com/liske/cgm-remote-monitor-docker/blob/master/docker-compose.yml) file and change it to meet your needs. You need to use an explicit version tag for the docker image - the `latest` tag is missing intentionally!
+Grab the example [docker-compose.yml](https://github.com/liske/cgm-remote-monitor-docker/blob/master/ex/ns/docker-compose.yml) file and change it to meet your needs. You need to use an explicit version tag for the docker image - the `latest` tag is missing intentionally!
 
 Details of the configuration parameters can be found in Nightscout's [README.md](https://github.com/nightscout/cgm-remote-monitor/blob/master/README.md#environment).
 

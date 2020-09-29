@@ -1,0 +1,97 @@
+version: '3'
+services:
+  traefik:
+    image: traefik:v2.3
+    read_only: true
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./traefik/config.yml:/etc/traefik/config.yml:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/acme:/etc/traefik/acme
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - rp
+
+  cgm-remote-monitor:
+    image: liske/cgm-remote-monitor:14.0.6
+    environment:
+      ## settings according to
+      ## https://github.com/nightscout/cgm-remote-monitor/blob/master/README.md#environment
+
+      # MongoDB connection within the stack
+      - MONGO_CONNECTION=mongodb://mongo:27017/Nightscout
+      # admin secret
+      - API_SECRET=xxxxxxxx
+      # the URL to this Nightscout instance
+      - BASE_URL=https://ns.example.com/
+      # using a reverse proxy with SSL offloading
+      - INSECURE_USE_HTTP=true
+      # deny access by default
+      - AUTH_DEFAULT_ROLES=denied
+
+      # device info fields to show
+      - PUMP_FIELDS=reservoir battery status
+      # required for other plugins (i.e. upbat)
+      - DEVICESTATUS_ADVANCED=true
+      # enable plugins
+      - ENABLE=careportal delta direction upbat timeago pump bwg rawbg devicestatus openaps
+      # tune BG target and alarm ranges (since nightscout 13.0.0 in *display* units)
+      - BG_HIGH=12.5
+      - BG_TARGET_TOP=9.4
+      - BG_TARGET_BOTTOM=3.9
+      - BG_LOW=3.2
+
+      # website title by default
+      - CUSTOM_TITLE=Nightscout TL
+      # use SI units by default
+      - DISPLAY_UNITS=mmol
+      # use 24h time format by default
+      - TIME_FORMAT=24
+      # switch to "colors" theme by default
+      - THEME=colors
+      # switch to German by default
+      - LANGUAGE=de
+      # show basal rate by default
+      - BASAL_RENDER=default
+      # show plugins by default
+      - SHOW_PLUGINS=pump openaps
+      # do not allow treatment editing
+      - EDIT_MODE=off
+      # disable any alarms by default (if using Nightscout as time series visualization)
+      - ALARM_URGENT_HIGH=off
+      - ALARM_HIGH=off
+      - ALARM_URGENT_LOW=off
+      - ALARM_LOW=off
+      - ALARM_TIMEAGO_WARN=off
+      - ALARM_TIMEAGO_URGENT=off
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.ns.entrypoints=https
+      # change ns.example.com to your BASE_URL's hostname
+      - traefik.http.routers.ns.rule=Host(`ns.example.com`)
+      - traefik.http.routers.ns.middlewares=security-headers@file
+      - traefik.http.routers.ns.tls=true
+      - traefik.http.routers.ns.tls.options=default
+      - traefik.http.routers.ns.tls.certResolver=acmeTLS
+      - traefik.http.services.ns.loadbalancer.server.port=1337
+    networks:
+      - rp
+      - db
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:3.20-xenial
+    volumes:
+      - ./mongodb:/data/db
+    networks:
+      - db
+
+
+networks:
+  # reverse proxy
+  rp:
+  # internal
+  db:
